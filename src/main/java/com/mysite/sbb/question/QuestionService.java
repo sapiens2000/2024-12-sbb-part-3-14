@@ -27,7 +27,15 @@ public class QuestionService {
     public Question getQuestion(Integer id) {
         Optional<Question> question = this.questionRepository.findById(id);
         if (question.isPresent()) {
-            return question.get();
+            // viewCount + 1 하고 반환
+            Question question1 = question.get();
+            int viewCount = question1.getViewCount();
+            question1.setViewCount(viewCount+1);
+
+            // 변경된 조회수 저장
+            questionRepository.save(question1);
+
+            return question1;
         } else {
             throw new DataNotFoundException("question not found");
         }

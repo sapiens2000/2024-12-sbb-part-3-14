@@ -10,6 +10,7 @@ import jakarta.persistence.*;
 
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.ColumnDefault;
 
 @Getter
 @Setter
@@ -36,4 +37,7 @@ public class Question {
 
     @ManyToMany
     Set<SiteUser> voter;
+
+    @ColumnDefault("0")
+    private Integer viewCount;
 }
