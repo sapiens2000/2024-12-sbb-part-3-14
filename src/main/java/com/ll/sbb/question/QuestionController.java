@@ -40,6 +40,8 @@ public class QuestionController {
     public String detail(Model model, @PathVariable("id") Integer id, AnswerForm answerForm) {
 
         Question question = this.questionService.getQuestion(id);
+        // 조회수 업데이트
+        this.questionService.addViewCount(question);
 
         model.addAttribute("question", question);
         return "question_detail";

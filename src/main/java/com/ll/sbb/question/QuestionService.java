@@ -44,6 +44,11 @@ public class QuestionService {
         }
     }
 
+    public void addViewCount(Question question) {
+        question.setViews(question.getViews() + 1);
+        this.questionRepository.save(question);
+    }
+
     public void create(String subject, String content, Category category, SiteUser user) {
         Question q = new Question();
         q.setSubject(subject);
