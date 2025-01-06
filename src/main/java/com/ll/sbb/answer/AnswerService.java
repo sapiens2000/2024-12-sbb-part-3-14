@@ -4,9 +4,16 @@ import com.ll.sbb.DataNotFoundException;
 import com.ll.sbb.question.Question;
 import com.ll.sbb.user.SiteUser;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 @RequiredArgsConstructor
@@ -48,5 +55,20 @@ public class AnswerService {
     public void vote(Answer answer, SiteUser siteUser) {
         answer.getVoter().add(siteUser);
         this.answerRepository.save(answer);
+    }
+
+    public Page<Answer> getList(Question q, int page, String property) {
+        List<Sort.Order> sorts = new ArrayList<>();
+
+        if(!property.equals("voters")) {
+            sorts.add(Sort.Order.desc(property));
+        }
+
+        Pageable pageable = PageRequest.of(page, 10, Sort.by(sorts));
+        //TODO: 추천순 오류 수정해야함
+        if(property.equals("voter")) {
+            return this.answerRepository.findByQuestionOrderByVoterCountDesc(q, pageable);
+        }
+        return this.answerRepository.findByQuestion(q, pageable);
     }
 }

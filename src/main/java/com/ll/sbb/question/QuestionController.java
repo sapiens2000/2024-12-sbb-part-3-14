@@ -1,6 +1,8 @@
 package com.ll.sbb.question;
 
+import com.ll.sbb.answer.Answer;
 import com.ll.sbb.answer.AnswerForm;
+import com.ll.sbb.answer.AnswerService;
 import com.ll.sbb.category.Category;
 import com.ll.sbb.category.CategoryService;
 import com.ll.sbb.user.SiteUser;
@@ -26,6 +28,7 @@ public class QuestionController {
     private final QuestionService questionService;
     private final UserService userService;
     private final CategoryService categoryService;
+    private final AnswerService answerService;
 
     @GetMapping("/list")
     public String list(Model model, @RequestParam(value = "page", defaultValue = "0") int page,
@@ -37,13 +40,18 @@ public class QuestionController {
     }
 
     @GetMapping(value = "/detail/{id}")
-    public String detail(Model model, @PathVariable("id") Integer id, AnswerForm answerForm) {
+    public String detail(Model model, @PathVariable("id") Integer id, AnswerForm answerForm,
+                         @RequestParam(value = "property", defaultValue = "createDate") String property,
+                         @RequestParam(value = "page", defaultValue = "0") int page) {
 
         Question question = this.questionService.getQuestion(id);
+        Page<Answer> paging = this.answerService.getList(question, page, property);
+
         // 조회수 업데이트
         this.questionService.addViewCount(question);
 
         model.addAttribute("question", question);
+        model.addAttribute("paging", paging);
         return "question_detail";
     }
 
