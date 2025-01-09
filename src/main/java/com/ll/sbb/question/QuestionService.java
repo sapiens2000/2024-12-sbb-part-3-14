@@ -25,7 +25,6 @@ import lombok.RequiredArgsConstructor;
 public class QuestionService {
 
     private final QuestionRepository questionRepository;
-    private final CategoryRepository categoryRepository;
 
     public Page<Question> getList(int page, String kw) {
         List<Sort.Order> sorts = new ArrayList<>();
@@ -94,5 +93,10 @@ public class QuestionService {
                         cb.like(u2.get("username"), "%" + kw + "%"));   // 답변 작성자
             }
         };
+    }
+
+    public Page<Question> getListByAuthor(int page, SiteUser user) {
+        Pageable pageable = PageRequest.of(page, 10);
+        return this.questionRepository.findByAuthor(pageable, user);
     }
 }
